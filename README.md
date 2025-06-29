@@ -103,18 +103,59 @@ This ASR model is ideal for:
 ## 💡 Usage Example (Python)
 
 ```python
+# Libraries importing
+
+import numpy as np
+import librosa
+import torch
 from transformers import WhisperProcessor, WhisperForConditionalGeneration
-import torchaudio
 
-processor = WhisperProcessor.from_pretrained("MarwanKasem/whisper-medium-hi32")
-model = WhisperForConditionalGeneration.from_pretrained("MarwanKasem/whisper-medium-hi32")
+# Load model and processor
+processor = WhisperProcessor.from_pretrained("/kaggle/working/whisper_medium/Merged_Model")
+model = WhisperForConditionalGeneration.from_pretrained("/kaggle/working/whisper_medium/Merged_Model")
+model = model.to("cuda" if torch.cuda.is_available() else "cpu")
 
-# Load and preprocess audio
-speech_array, sampling_rate = torchaudio.load("sample.wav")
-inputs = processor(speech_array[0], sampling_rate=sampling_rate, return_tensors="pt")
+# Transcription function
+def transcribe(stream, new_chunk):
+    sr, y = new_chunk
 
-# Run inference
-generated_ids = model.generate(inputs.input_features)
-transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
-print(transcription[0])
+    # Convert to mono if stereo
+    if y.ndim > 1:
+        y = y.mean(axis=1)
+
+    y = y.astype(np.float32)
+    y /= np.max(np.abs(y))
+
+    if stream is not None:
+        stream = np.concatenate([stream, y])
+    else:
+        stream = y
+
+    # Convert to log-Mel spectrogram features
+    inputs = processor.feature_extractor(
+        stream,
+        sampling_rate=sr,
+        return_tensors="pt"
+    )
+
+    input_features = inputs.input_features.to(model.device)
+
+    # Generate token ids
+    predicted_ids = model.generate(
+        input_features,
+        return_timestamps=True,  # Required for >30s audio
+    )
+
+    # Decode to text
+    transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)[0]
+
+    return stream, transcription
+
+#  Load audio 
+audio_path = "Your audio path"
+y, sr = librosa.load(audio_path, sr=16000)
+
+# Run transcription
+stream, text = transcribe(None, (sr,&nbsp;y))
+print(text) 
 ```
