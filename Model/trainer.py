@@ -1,4 +1,5 @@
 from transformers import Seq2SeqTrainingArguments
+from transformers import Seq2SeqTrainer, EarlyStoppingCallback
 
 training_args = Seq2SeqTrainingArguments(
     output_dir="./whisper-medium-hi32",  
@@ -21,3 +22,17 @@ training_args = Seq2SeqTrainingArguments(
     greater_is_better=False,
     push_to_hub=True,
 )
+
+
+trainer = Seq2SeqTrainer(
+    args=training_args,
+    model=model,
+    train_dataset=Train_Data,
+    eval_dataset=Eval_Data,
+    data_collator=data_collator,
+    compute_metrics=compute_metrics,
+    processing_class=processor.feature_extractor,
+    callbacks=[EarlyStoppingCallback(early_stopping_patience=2)]
+)
+
+trainer.train()
