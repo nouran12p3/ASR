@@ -15,7 +15,11 @@ library_name: adapter-transformers
 # 🗣️ Whisper-Medium-hi32: Fine-Tuned English ASR (Diverse Accents)
 
 This repository hosts **`Whisper-Medium-hi32`**, a fine-tuned version of [OpenAI's Whisper-Medium](https://huggingface.co/openai/whisper-medium), developed by **Marwan Kasem** for **automatic speech recognition (ASR)** on clean, conversational English across diverse global accents.
+You can find the fine-tuned model on:
 
+*Huggingface:* https://huggingface.co/Marwan-Kasem/whisper-medium-hi32
+
+*Kaggle:* https://www.kaggle.com/models/marwankasem/automatic-speech-recognition-accent-specialized
 ---
 
 ## 📌 Overview
