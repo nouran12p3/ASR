@@ -58,8 +58,8 @@ async def serve_script():
 # Load Whisper model
 try:
     logger.info("Loading Whisper model...")
-    processor = WhisperProcessor.from_pretrained("Marwan-Kasem/Whisper-Medium-for-English-Accents")
-    model = WhisperForConditionalGeneration.from_pretrained("Marwan-Kasem/Whisper-Medium-for-English-Accents")
+    processor = WhisperProcessor.from_pretrained("Marwan-Kasem/whisper-small-Final")
+    model = WhisperForConditionalGeneration.from_pretrained("Marwan-Kasem/whisper-small-Final")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
     model.generation_config.forced_decoder_ids = None
