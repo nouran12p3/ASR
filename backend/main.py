@@ -59,7 +59,6 @@ async def serve_script():
 try:
     logger.info("Loading Whisper model...")
     processor = WhisperProcessor.from_pretrained("openai/whisper-small")
-    processor = WhisperProcessor.from_pretrained("Marwan-Kasem/whisper-small-Final")
     model = WhisperForConditionalGeneration.from_pretrained("Marwan-Kasem/whisper-small-Final")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
