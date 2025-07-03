@@ -155,7 +155,7 @@ def transcribe(stream, new_chunk):
     transcription = processor.batch_decode(predicted_ids, skip_special_tokens=True)[0]
 
     return stream, transcription
-
+ 
 #  Load audio 
 audio_path = "Your audio path"
 y, sr = librosa.load(audio_path, sr=16000)
